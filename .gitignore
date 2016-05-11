@@ -45,3 +45,6 @@ tests/coverage
 
 #OSX garbage
 .DS_Store
+
+# cygwin executables
+*.exe
