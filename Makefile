@@ -1,6 +1,7 @@
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -Isrc/mbedtls/include -pthread -rdynamic -DNDEBUG $(OPTFLAGS) -D_FILE_OFFSET_BITS=64
 LIBS=-lzmq -ldl -lsqlite3 $(OPTLIBS)
 PREFIX?=/usr/local
+DESTDIR?=
 
 get_objs = $(addsuffix .o,$(basename $(wildcard $(1))))
 
@@ -156,23 +157,23 @@ config_modules: build/libm2.a
 	${MAKE} ${MAKEOPTS} -C tools/config_modules all
 
 # Try to install first before creating target directory and trying again
-#install: all
-#	install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ \
-#	    || ( install -d $(DESTDIR)/$(PREFIX)/bin/ \
-#	        && install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ )
-#	${MAKE} ${MAKEOPTS} -C tools/m2sh install
-#	${MAKE} ${MAKEOPTS} -C tools/config_modules install
-#	${MAKE} ${MAKEOPTS} -C tools/filters install
-#	${MAKE} ${MAKEOPTS} -C tools/procer install
-
 install: all
-	install bin/mongrel2 $(PREFIX)/bin/ \
-	    || ( install -d $(PREFIX)/bin/ \
-	        && install bin/mongrel2 $(PREFIX)/bin/ )
+	install bin/mongrel2 $(DESTDIR)$(PREFIX)/bin/ \
+	    || ( install -d $(DESTDIR)$(PREFIX)/bin/ \
+	        && install bin/mongrel2 $(DESTDIR)$(PREFIX)/bin/ )
 	${MAKE} ${MAKEOPTS} -C tools/m2sh install
 	${MAKE} ${MAKEOPTS} -C tools/config_modules install
 	${MAKE} ${MAKEOPTS} -C tools/filters install
 	${MAKE} ${MAKEOPTS} -C tools/procer install
+
+#install: all
+#	install bin/mongrel2 $(PREFIX)/bin/ \
+#	    || ( install -d $(PREFIX)/bin/ \
+#	        && install bin/mongrel2 $(PREFIX)/bin/ )
+#	${MAKE} ${MAKEOPTS} -C tools/m2sh install
+#	${MAKE} ${MAKEOPTS} -C tools/config_modules install
+#	${MAKE} ${MAKEOPTS} -C tools/filters install
+#	${MAKE} ${MAKEOPTS} -C tools/procer install
 
 examples/python/mongrel2/sql/config.sql: src/config/config.sql src/config/mimetypes.sql
 	cat src/config/config.sql src/config/mimetypes.sql > $@
