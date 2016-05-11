@@ -1,0 +1,2 @@
+@echo Websocket test on 192.168.0.13:6767/websocket
+curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" -H "Host: 192.168.0.13:6767" -H "Origin: http://192.168.0.13:6767" http://192.168.0.13:6767/websocket

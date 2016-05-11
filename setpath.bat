@@ -1,0 +1,1 @@
+set PATH=%PATH%;C:\MyTools\Cygwin64\usr\local\bin;C:\MyTools\Cygwin64\bin
