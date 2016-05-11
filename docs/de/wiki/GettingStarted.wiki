@@ -1,4 +1,4 @@
-﻿<h1>Erste Schritte mit Mongrel2</h1>
+<h1>Erste Schritte mit Mongrel2</h1>
 
 <p>Dies ist der schnellste Weg, um Mongrel2 zum Laufen zu bekommen. Es wird nicht viel erklärt,
 nur alle benötigten Dinge und du führst ein paar Befehle aus.

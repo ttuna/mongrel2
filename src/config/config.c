@@ -357,7 +357,17 @@ Server *Config_load_server(const char *uuid)
             DB_get_as(res, 0, 10, number) // use_ssl
             );
     check(srv != NULL, "Failed to create server %s", uuid);
-
+	
+	log_info("Server uuid: %s"			,bdata(srv->uuid));
+	log_info("Server default_host: %s"	,bdata(srv->default_hostname));
+	log_info("Server bind_addr: %s"		,bdata(srv->bind_addr));
+	log_info("Server port: %d"			,srv->port);
+	log_info("Server chroot: %s"		,bdata(srv->chroot));
+	log_info("Server access_log: %s"	,bdata(srv->access_log));
+	log_info("Server error_log: %s"		,bdata(srv->error_log));
+	log_info("Server pid_file: %s"		,bdata(srv->pid_file));
+	log_info("Server control_port: %s"	,bdata(srv->control_port));
+	log_info("Server use_ssl: %d"		,srv->use_ssl);
 
     rc = Config_load_hosts(srv, server_id);
     check(rc == 0, "Failed to load the hosts for server: %s", bdata(srv->uuid));

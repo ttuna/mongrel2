@@ -233,12 +233,24 @@ int attempt_chroot_drop(Server *srv)
 
     if(srv->chroot != NULL) {
         if(Unixy_chroot(srv->chroot) == 0) {
+			log_info("Unixy_chroot done ...");
+#if !defined(__CYGWIN__)
             if(Setting_get_int("server.daemonize", 1)) {
+#else
+			if(0) {
+#endif
                 rc = Unixy_daemonize(1); // 1 == chdir /
+				log_info("Unixy_daemonize done ...");
                 check(rc == 0, "Failed to daemonize, looks like you're hosed.");
             }
             else {
                 rc = chdir("/");
+				
+				char cwd[1024];
+				if (getcwd(cwd, sizeof(cwd)) == NULL)
+					sprintf(cwd, "error");
+				
+				log_info("chdir done ... root dir: %s", cwd);
                 check(rc == 0, "Failed to change working directory to '/'.");
             }
         } else {
@@ -408,6 +420,7 @@ void taskmain(int argc, char **argv)
 
     Server_queue_init();
 
+	log_info("load_server: %s, %s", argv[1], argv[2]);
     Server *srv = load_server(argv[1], argv[2], NULL);
     check(srv != NULL, "Aborting since can't load server.");
     Server_queue_push(srv);
@@ -419,6 +432,8 @@ void taskmain(int argc, char **argv)
 
     rc = attempt_chroot_drop(srv);
     check(rc == 0, "Major failure in chroot/droppriv, aborting."); 
+	
+	log_info("chroot done ... already alive");
 
     // set up rng after chroot
     // TODO: once mbedtls is updated, we can move this back into Server_create

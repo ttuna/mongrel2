@@ -6,7 +6,6 @@ OBJECTS=$(patsubst %.c,%.o,${SOURCES})
 
 all: procer
 
-
 procer: ../../build/libm2.a ${OBJECTS}
 	$(CC) $(OPTFLAGS) $(OPTLIBS) -o $@ ${OBJECTS} ../../build/libm2.a ${LIBS}
 
@@ -16,5 +15,7 @@ clean:
 pristine:
 	rm -f *.o procer
 
+#install: procer
+#	install procer $(DESTDIR)$(PREFIX)/bin/
 install: procer
-	install procer $(DESTDIR)$(PREFIX)/bin/
+	install procer $(PREFIX)/bin/

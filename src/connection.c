@@ -343,7 +343,7 @@ error:
 }
 
 static int Request_is_websocket(Request *req)
-{
+{	
     bstring upgrade,connection;
 
     if(req->ws_flags != 0)
@@ -375,6 +375,8 @@ static inline int is_websocket(Connection *conn)
 
 int connection_http_to_handler(Connection *conn)
 {
+	log_info("connection_http_to_handler");
+	
     int content_len = Request_content_length(conn->req);
     int rc = 0;
     char *body = NULL;
@@ -447,6 +449,8 @@ error:
 
 int connection_http_to_directory(Connection *conn)
 {
+	log_info("connection_http_to_directory");
+	
     Dir *dir = Request_get_action(conn->req, dir);
 
     int rc = Dir_serve_file(dir, conn->req, conn);
@@ -680,6 +684,7 @@ int connection_identify_request(Connection *conn)
     int next = CLOSE;
 
     if(Request_is_xml(conn->req)) {
+		log_info("Request_is_xml");
         if(biseq(Request_path(conn->req), &POLICY_XML_REQUEST)) {
             debug("XML POLICY CONNECTION: %s", bdata(Request_path(conn->req)));
             conn->type = CONN_TYPE_SOCKET;
@@ -692,21 +697,25 @@ int connection_identify_request(Connection *conn)
             next = MSG_REQ;
         }
     } else if(Request_is_json(conn->req)) {
+		log_info("Request_is_json");
         debug("JSON SOCKET MESSAGE");
         conn->type = CONN_TYPE_MSG;
         taskname("MSG");
         next = MSG_REQ;
     } else if(Request_is_websocket(conn->req)) {
+		log_info("Request_is_websocket");
         debug("WEBSOCKET MESSAGE");
         conn->type = CONN_TYPE_SOCKET;
         taskname("WS");
         next = WS_REQ;
     } else if(Request_is_http(conn->req)) {
+		log_info("Request_is_http");
         debug("HTTP MESSAGE");
         conn->type = CONN_TYPE_HTTP;
         taskname("HTTP");
         next = HTTP_REQ;
     } else {
+		log_info("invalid request");
         error_response(conn, 500, "Invalid code branch, tell Zed.");
     }
 
@@ -849,8 +858,10 @@ error:
 int connection_websocket_established(Connection *conn)
 {
     if(Connection_read_wspacket(conn) > 0) {
+		log_info("connection_websocket_established - REQ_SENT");
         return REQ_SENT;
     } else {
+		log_info("connection_websocket_established - CLOSE");
         return CLOSE;
     }
 
@@ -1115,7 +1126,7 @@ void Connection_task(void *v)
     Connection *conn = (Connection *)v;
     int i = 0;
     int next = OPEN;
-
+	
     State_init(&conn->state, &CONN_ACTIONS);
 
     while(1) {
@@ -1127,7 +1138,9 @@ void Connection_task(void *v)
 
         if(next == CLOSE) break;
 
+		log_info("state: %d; event: %d", conn->state.cs, next);
         next = State_exec(&conn->state, next, (void *)conn);
+		log_info("next event: %d", next);
 
         check(next >= CLOSE && next < EVENT_END,
                 "!!! Invalid next event[%d]: %d, Tell ZED!", i, next);

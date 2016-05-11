@@ -119,6 +119,7 @@ pid_t Unixy_pid_read(bstring pid_path)
 
     check(pid_path, "PID file has not been set yet.");
 
+	log_info("pid_read befor fopen: %s", bdata(pid_path));
     pid_file = fopen(bdata(pid_path), "r");
     check(pid_file, "Failed to open PID file %s for reading.", bdata(pid_path));
 
@@ -206,6 +207,7 @@ error:
 int Unixy_daemonize(int dochdir)
 {
     // daemonize is just too damn eager on closing stuff
+	log_info("daemon(%d,1)", !dochdir);
     int rc = daemon(!dochdir, 1);
     check(rc == 0, "Failed to daemonize.");
 

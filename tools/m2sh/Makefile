@@ -14,8 +14,10 @@ all: ../lemon/lemon tests build/m2sh
 dev: CFLAGS=-g -Wall -Wextra -Isrc -I../../src $(OPTFLAGS)
 dev: all
 
+#install: build/m2sh
+#	install build/m2sh ${DESTDIR}${PREFIX}/bin
 install: build/m2sh
-	install build/m2sh ${DESTDIR}${PREFIX}/bin
+	install build/m2sh ${PREFIX}/bin
 
 build/libm2sh.a: ${LIB_OBJ}
 	mkdir -p build
@@ -58,3 +60,6 @@ freebsd: OPTFLAGS=-I/usr/local/include
 freebsd: OPTLIBS=-L/usr/local/lib
 freebsd: dev
 
+cygwin: OPTFLAGS += -I/usr/local/include
+cygwin: OPTLIBS += -L/usr/local/lib -pthread
+cygwin: all

@@ -29,6 +29,7 @@ ifdef $($(shell									\
 	fi ))
 endif
 
+#all: builddirs bin/mongrel2 m2sh procer
 all: builddirs bin/mongrel2 tests m2sh procer
 
 dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS) -D_FILE_OFFSET_BITS=64
@@ -85,7 +86,7 @@ builddirs:
 bin/mongrel2: build/libm2.a src/mongrel2.o
 	$(CC) $(CFLAGS) src/mongrel2.o -o $@ $< $(LIBS)
 
-build/libm2.a: CFLAGS += -fPIC
+#build/libm2.a: CFLAGS += -fPIC
 build/libm2.a: ${LIB_OBJ}
 	ar rcs $@ ${LIB_OBJ}
 	ranlib $@
@@ -155,10 +156,19 @@ config_modules: build/libm2.a
 	${MAKE} ${MAKEOPTS} -C tools/config_modules all
 
 # Try to install first before creating target directory and trying again
+#install: all
+#	install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ \
+#	    || ( install -d $(DESTDIR)/$(PREFIX)/bin/ \
+#	        && install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ )
+#	${MAKE} ${MAKEOPTS} -C tools/m2sh install
+#	${MAKE} ${MAKEOPTS} -C tools/config_modules install
+#	${MAKE} ${MAKEOPTS} -C tools/filters install
+#	${MAKE} ${MAKEOPTS} -C tools/procer install
+
 install: all
-	install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ \
-	    || ( install -d $(DESTDIR)/$(PREFIX)/bin/ \
-	        && install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ )
+	install bin/mongrel2 $(PREFIX)/bin/ \
+	    || ( install -d $(PREFIX)/bin/ \
+	        && install bin/mongrel2 $(PREFIX)/bin/ )
 	${MAKE} ${MAKEOPTS} -C tools/m2sh install
 	${MAKE} ${MAKEOPTS} -C tools/config_modules install
 	${MAKE} ${MAKEOPTS} -C tools/filters install
@@ -219,7 +229,6 @@ netbsd: OPTLIBS += -L/usr/local/lib -L/usr/pkg/lib
 netbsd: LIBS=-lzmq -lsqlite3 $(OPTLIBS)
 netbsd: dev
 
-
 freebsd: OPTFLAGS += -I/usr/local/include
 freebsd: OPTLIBS += -L/usr/local/lib -pthread
 freebsd: LIBS=-lzmq -lsqlite3 $(OPTLIBS)
@@ -235,8 +244,11 @@ solaris: OPTLIBS += -L/usr/local/lib -R/usr/local/lib -lsocket -lnsl -lsendfile
 solaris: OPTLIBS += -L/lib -R/lib
 solaris: all
 
-
 macports: OPTFLAGS += -I/opt/local/include
 macports: OPTLIBS += -L/opt/local/lib -undefined dynamic_lookup
 macports: all
 
+cygwin: OPTFLAGS += -I/usr/local/include
+cygwin: OPTLIBS += -L/usr/local/lib -pthread
+cygwin: LIBS=-L/usr/local/lib -lzmq -lsqlite3 $(OPTLIBS)
+cygwin: all

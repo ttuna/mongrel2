@@ -1,4 +1,4 @@
-﻿
+
 <h1>About Mongrel2</h1>
 
 <p style="font-size: 1.2em;">Mongrel2 is an <em>application</em>,

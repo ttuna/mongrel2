@@ -1,5 +1,5 @@
 PREFIX?=/usr/local
-CFLAGS=-I../../src -I../../src/mbedtls/include $(OPTFLAGS) -fPIC -shared -nostartfiles -L../../build
+CFLAGS=-I../../src -I../../src/mbedtls/include $(OPTFLAGS) -shared -nostartfiles -L../../build
 LDFLAGS=$(OPTLIBS)
 
 MONGO_SRC = mongo-c-driver/src/bson.c \
@@ -32,7 +32,10 @@ clean:
 	rm -f *.o *.so
 	rm -Rf mongo-c-driver
 
+#install:
+#	install -d $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
+#	install *.so $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
 install:
-	install -d $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
-	install *.so $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
+	install -d $(PREFIX)/lib/mongrel2/config_modules/
+	install *.so $(PREFIX)/lib/mongrel2/config_modules/
 

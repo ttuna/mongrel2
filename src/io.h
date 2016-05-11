@@ -10,7 +10,7 @@
 #include <mbedtls/ssl.h>
 #include "server.h"
 
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__CYGWIN__)
 #include "bsd_specific.h"
 #else
 #include <sys/sendfile.h>
@@ -104,7 +104,7 @@ int IOBuf_stream_file(IOBuf *buf, int fd, off_t len);
 
 #define IOBuf_fd(I) ((I)->fd)
 
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__CYGWIN__)
 #define IOBuf_sendfile bsd_sendfile
 #else
 #define IOBuf_sendfile sendfile
