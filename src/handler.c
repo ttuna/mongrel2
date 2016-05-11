@@ -290,7 +290,9 @@ static inline int handler_recv_parse(Handler *handler, HandlerParser *parser)
 
     taskstate("recv");
 
+	log_info("handler_recv_parse - before mqrecv");
     rc = mqrecv(handler->recv_socket, inmsg, 0);
+	log_info("handler_recv_parse - after mqrecv %d", rc);
     check(rc == 0, "Receive on handler socket failed.");
     check(handler->running, "Handler marked as not running.");
 
@@ -336,6 +338,7 @@ void Handler_task(void *v)
             log_warn("Handler task signaled, exiting.");
             break;
         } else if( rc == -1 || parser->target_count <= 0) {
+			log_info("Skipped invalid message from handler: %s", bdata(handler->send_spec));
             log_warn("Skipped invalid message from handler: %s", bdata(handler->send_spec));
             taskdelay(100);
             continue;

@@ -327,8 +327,10 @@ int Connection_send_to_handler(Connection *conn, Handler *handler, char *body, i
 
     check(payload, "Failed to create payload for request.");
     debug("HTTP TO HANDLER: %.*s", blength(payload) - content_len, bdata(payload));
-
+	log_info("Connection_send_to_handler - payload: %s", bdata(payload));
+	log_info("Connection_send_to_handler - before Handler_deliver");
     rc = Handler_deliver(handler->send_socket, bdata(payload), blength(payload));
+	log_info("Connection_send_to_handler - after Handler_deliver %d", rc);
     free(payload); payload = NULL;
 
     error_unless(rc != -1, conn, 502, "Failed to deliver to handler: %s", 
@@ -383,9 +385,8 @@ int connection_http_to_handler(Connection *conn)
 
     Handler *handler = Request_get_action(conn->req, handler);
     error_unless(handler, conn, 404, "No action for request: %s", bdata(Request_path(conn->req)));
-
-    bstring expects = Request_get(conn->req, &HTTP_EXPECT);
-
+	
+    bstring expects = Request_get(conn->req, &HTTP_EXPECT);	
     if (expects != NULL) {
         if (biseqcstr(expects, "100-continue")) {
             Response_send_status(conn, &HTTP_100);
@@ -404,12 +405,16 @@ int connection_http_to_handler(Connection *conn)
 
     if(is_websocket(conn)) {
         bstring wsKey = Request_get(conn->req, &WS_SEC_WS_KEY);
+		log_info("connection_http_to_handler - before websocket_challenge %s", bdata(wsKey));
         bstring response= websocket_challenge(wsKey);
+		log_info("connection_http_to_handler - after websocket_challenge %s", bdata(response));
 
         //Response_send_status(conn,response);
         bdestroy(conn->req->request_method);
         conn->req->request_method=bfromcstr("WEBSOCKET_HANDSHAKE");
+		log_info("connection_http_to_handler - before Connection_send_to_handler %s", bdata(response));
         Connection_send_to_handler(conn, handler, bdata(response), blength(response), NULL);
+		log_info("connection_http_to_handler - after Connection_send_to_handler %s", bdata(response));
         bdestroy(response);
 
         bdestroy(conn->req->request_method);
@@ -1138,10 +1143,7 @@ void Connection_task(void *v)
 
         if(next == CLOSE) break;
 
-		log_info("state: %d; event: %d", conn->state.cs, next);
         next = State_exec(&conn->state, next, (void *)conn);
-		log_info("next event: %d", next);
-
         check(next >= CLOSE && next < EVENT_END,
                 "!!! Invalid next event[%d]: %d, Tell ZED!", i, next);
 

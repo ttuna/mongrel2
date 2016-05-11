@@ -30,8 +30,8 @@ ifdef $($(shell									\
 	fi ))
 endif
 
-#all: builddirs bin/mongrel2 m2sh procer
-all: builddirs bin/mongrel2 tests m2sh procer
+all: builddirs bin/mongrel2 m2sh procer
+#all: builddirs bin/mongrel2 tests m2sh procer
 
 dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS) -D_FILE_OFFSET_BITS=64
 dev: all
