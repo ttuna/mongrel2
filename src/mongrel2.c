@@ -371,6 +371,8 @@ void complete_shutdown(Server *srv)
     rc = Server_queue_destroy();
     check(rc == 0, "Failed cleaning up the server run queue.");
 
+	log_info("===\n");
+	
     Register_destroy();
     fdshutdown();
 
@@ -432,8 +434,6 @@ void taskmain(int argc, char **argv)
 
     rc = attempt_chroot_drop(srv);
     check(rc == 0, "Major failure in chroot/droppriv, aborting."); 
-	
-	log_info("chroot done ... already alive");
 
     // set up rng after chroot
     // TODO: once mbedtls is updated, we can move this back into Server_create

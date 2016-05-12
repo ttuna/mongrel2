@@ -1,0 +1,52 @@
+!!! Chrome websocket request !!!
+
+a7e0def3-9050-44f9-b0e2-ca2b150ffcc4 
+8 
+/websocket/ 
+741:{
+	\"PATH\":\"/websocket/\",
+	\"sec-websocket-extensions\":\"permessage-deflate; client_max_window_bits\",
+	\"x-forwarded-for\":\"157.247.245.36\",
+	\"cache-control\":\"no-cache\",
+	\"origin\":\"http://157.247.245.36:6767\",
+	\"accept-language\":\"de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4\",
+	\"accept-encoding\":\"gzip, deflate, sdch\",
+	\"connection\":\"Upgrade\",
+	\"sec-websocket-version\":\"13\",
+	\"pragma\":\"no-cache\",
+	\"sec-websocket-key\":\"les1MugvHgSQ/Fxz+FarZA==\",
+	\"dnt\":\"1\",
+	\"user-agent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36\",
+	\"host\":\"157.247.245.36:6767\",
+	\"upgrade\":\"websocket\",
+	\"METHOD\":\"WEBSOCKET_HANDSHAKE\",
+	\"VERSION\":\"HTTP/1.1\",
+	\"URI\":\"/websocket/\",
+	\"PATTERN\":\"/websocket\",
+	\"URL_SCHEME\":\"http\",
+	\"REMOTE_ADDR\":\"157.247.245.36\"},
+28:kMNL/VEZekcBAq3Blmc3t7vliyc=,
+
+
+!!! QWebsocket request !!!
+
+a7e0def3-9050-44f9-b0e2-ca2b150ffcc4 
+20 
+/websocket/ 
+386:{
+	\"PATH\":\"/websocket/\",
+	\"x-forwarded-for\":\"157.247.245.36\",
+	\"origin\":\"http://157.247.245.36\",
+	\"connection\":\"Upgrade\",
+	\"sec-websocket-version\":\"13\",
+	\"sec-websocket-key\":\"BFOCKTgBnAB6jb3G5r3z3g==\",
+	\"host\":\"157.247.245.36:6767\",
+	\"upgrade\":\"websocket\",
+	\"METHOD\":\"WEBSOCKET_HANDSHAKE\",
+	\"VERSION\":\"HTTP/1.1\",
+	\"URI\":\"/websocket/\",
+	\"PATTERN\":\"/websocket\",
+	\"URL_SCHEME\":\"http\",
+	\"REMOTE_ADDR\":\"157.247.245.36\"
+},
+28:WnF5tadBKVqyJ622elP+BD3QZ7g=,

@@ -272,7 +272,8 @@ error:
 
 int mqwait(void *socket, int rw)
 {
-    return _wait(socket, -1, rw);
+	int rc = _wait(socket, -1, rw);
+    return rc;
 }
 
 int mqrecv(void *socket, zmq_msg_t *msg, int flags)
@@ -281,6 +282,7 @@ int mqrecv(void *socket, zmq_msg_t *msg, int flags)
 
     // try to recv right away rather than go into the poll
     rc = zmq_msg_recv(msg, socket, ZMQ_DONTWAIT);
+	log_info("mqrecv - first zmq_msg_recv: %d", rc);
 
     // if the send failed because it would block, then wait
     while(rc < 0 && flags != ZMQ_DONTWAIT && errno == EAGAIN) {
@@ -289,6 +291,8 @@ int mqrecv(void *socket, zmq_msg_t *msg, int flags)
         }
 
         rc = zmq_msg_recv(msg, socket, ZMQ_DONTWAIT);
+		log_info("mqrecv - zmq_msg_recv %d", rc);
+
     }
 
     // Retain compatibiltiy with 0MQ 2.1; always returned 0 on success
@@ -301,6 +305,7 @@ int mqsend(void *socket, zmq_msg_t *msg, int flags)
 
     // try to send right away rather than go into the poll
     rc = zmq_msg_send(msg, socket, ZMQ_DONTWAIT);
+	log_info("mqsend - first zmq_msg_send: %d", rc);
 
     // if the send failed because it would block, then wait.
     while(rc < 0 && flags != ZMQ_DONTWAIT && errno == EAGAIN ) {
@@ -309,6 +314,7 @@ int mqsend(void *socket, zmq_msg_t *msg, int flags)
         }
 
         rc = zmq_msg_send(msg, socket, ZMQ_DONTWAIT);
+		log_info("mqsend - zmq_msg_send: %d", rc);
     }
 
     // Retain compatibiltiy with 0MQ 2.1; always returned 0 on success

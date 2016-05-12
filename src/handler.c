@@ -31,7 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+#undef NDEBUG
 #include <handler.h>
 #include <handler_parser.h>
 #include <task/task.h>
@@ -262,8 +262,10 @@ static inline void handler_process_request(Handler *handler, int id, int fd,
         check(rc != -1, "Register disconnect failed for: %d", fd);
     } else {
         int raw = conn->type != CONN_TYPE_MSG || handler->raw;
+		log_info("handler_process_request - raw=%d payload=%d:%s", raw, blength(payload), bdata(payload));
 
         rc = deliver_payload(raw, fd, conn, payload);
+		log_info("handler_process_request - deliver_payload rc=%d",rc);
         check(rc != -1, "Failed to deliver to connection %d on socket %d", id, fd);
     }
 
@@ -277,6 +279,8 @@ error:
 
 static inline int handler_recv_parse(Handler *handler, HandlerParser *parser)
 {
+	log_info("handler_recv_parse");
+	
     zmq_msg_t *inmsg = NULL;
     check(handler->running, "Called while handler wasn't running, that's not good.");
 
@@ -290,13 +294,12 @@ static inline int handler_recv_parse(Handler *handler, HandlerParser *parser)
 
     taskstate("recv");
 
-	log_info("handler_recv_parse - before mqrecv");
     rc = mqrecv(handler->recv_socket, inmsg, 0);
-	log_info("handler_recv_parse - after mqrecv %d", rc);
     check(rc == 0, "Receive on handler socket failed.");
     check(handler->running, "Handler marked as not running.");
 
     rc = HandlerParser_execute(parser, zmq_msg_data(inmsg), zmq_msg_size(inmsg));
+	log_info("handler_recv_parse - HandlerParser_execute %d", rc);
     check(rc == 1, "Failed to parse message from handler.");
 
     check(parser->target_count > 0, "Message sent had 0 targets: %.*s",
@@ -333,12 +336,11 @@ void Handler_task(void *v)
         taskstate("delivering");
 
         rc = handler_recv_parse(handler, parser);
-
+		
         if(task_was_signaled()) {
             log_warn("Handler task signaled, exiting.");
             break;
         } else if( rc == -1 || parser->target_count <= 0) {
-			log_info("Skipped invalid message from handler: %s", bdata(handler->send_spec));
             log_warn("Skipped invalid message from handler: %s", bdata(handler->send_spec));
             taskdelay(100);
             continue;
@@ -433,9 +435,9 @@ void *Handler_recv_create(const char *recv_spec, const char *uuid)
     void *listener_socket = mqsocket(ZMQ_SUB);
     check(listener_socket, "Can't create ZMQ_SUB socket.");
 
-    int rc = zmq_setsockopt(listener_socket, ZMQ_SUBSCRIBE, uuid, strlen(uuid));
-    check(rc == 0, "Failed to subscribe listener socket: %s", recv_spec);
-    log_info("Binding listener SUB socket %s subscribed to: %s", recv_spec, uuid);
+	int rc = zmq_setsockopt(listener_socket, ZMQ_SUBSCRIBE, uuid, strlen(uuid));
+	check(rc == 0, "Failed to subscribe listener socket: %s", recv_spec);
+	log_info("Binding listener SUB socket %s subscribed to: %s", recv_spec, uuid);
 
     rc = zmq_bind(listener_socket, recv_spec);
 

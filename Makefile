@@ -103,11 +103,11 @@ clean:
 	rm -rf release-scripts/output
 	find . \( -name "*.gcno" -o -name "*.gcda" \) -exec rm {} \;
 	if test -e .git; then git -C src/mbedtls checkout include/mbedtls/config.h; fi
-	${MAKE} -C tools/m2sh OPTLIB=${OPTLIB} clean
-	${MAKE} -C tools/filters OPTLIB=${OPTLIB} clean
-	${MAKE} -C tests/filters OPTLIB=${OPTLIB} clean
-	${MAKE} -C tools/config_modules OPTLIB=${OPTLIB} clean
-	${MAKE} -C tools/procer OPTLIB=${OPTLIB} clean
+#	${MAKE} -C tools/m2sh OPTLIB=${OPTLIB} clean
+#	${MAKE} -C tools/filters OPTLIB=${OPTLIB} clean
+#	${MAKE} -C tests/filters OPTLIB=${OPTLIB} clean
+#	${MAKE} -C tools/config_modules OPTLIB=${OPTLIB} clean
+#	${MAKE} -C tools/procer OPTLIB=${OPTLIB} clean
 
 pristine: clean
 	sudo rm -rf examples/python/build examples/python/dist examples/python/m2py.egg-info
@@ -122,7 +122,7 @@ pristine: clean
 	git submodule deinit -f src/mbedtls
 
 .PHONY: tests
-tests: tests/config.sqlite ${TESTS} test_filters filters config_modules
+tests: tests/configls .sqlite ${TESTS} test_filters filters config_modules
 	sh ./tests/runtests.sh
 
 tests/config.sqlite: src/config/config.sql src/config/example.sql src/config/mimetypes.sql

@@ -91,6 +91,7 @@ SuperPoll *SuperPoll_create()
     sp->nfd_hot = 0;
 
     if(HAS_EPOLL) {
+		log_info("SuperPoll_create - HAS_EPOLL == 1");
         int hot_dividend = Setting_get_int("superpoll.hot_dividend", 4);
 
         sp->max_hot = total_open_fd / hot_dividend;
@@ -101,10 +102,12 @@ SuperPoll *SuperPoll_create()
         debug("Allowing for %d hot and %d idle file descriptors (dividend was %d)",
                 sp->max_hot, sp->max_idle, hot_dividend);
     } else {
-        sp->max_hot = total_open_fd;
+        log_info("SuperPoll_create - HAS_EPOLL == 0");
+		sp->max_hot = total_open_fd;
 
         debug("You do not have epoll support. Allowing for %d file descriptors through poll.", sp->max_hot);
     }
+	log_info("SuperPoll_create - max_hot: %d", sp->max_hot);
 
     sp->pollfd = h_calloc(sizeof(zmq_pollitem_t), sp->max_hot);
     check_mem(sp->pollfd);
@@ -148,6 +151,7 @@ static inline int SuperPoll_add_poll(SuperPoll *sp, void *data, void *socket, in
         sentinel("Invalid event %c handed to superpoll.  r/w only.", rw);
     }
 
+	log_info("SuperPoll_add_poll - fd=%d socket=%p events=%d revents=0", fd, socket, bits);
     sp->pollfd[cur_fd].fd = fd;
     sp->pollfd[cur_fd].socket = socket;
     sp->pollfd[cur_fd].events = bits;
@@ -164,8 +168,10 @@ error:
 int SuperPoll_add(SuperPoll *sp, void *data, void *socket, int fd, int rw, int hot)
 {
     if(socket || hot || !HAS_EPOLL) {
+		log_info("SuperPoll_add - SuperPoll_add_poll: sp=%p data=%p socket=%p fd=%d rw=%c hot=%d",sp,data,socket,fd,rw,hot);
         return SuperPoll_add_poll(sp, data, socket, fd, rw);
     } else {
+		log_info("SuperPoll_add - Cannot add a 0MQ socket to the idle (!hot) set.");
         assert(!socket && "Cannot add a 0MQ socket to the idle (!hot) set.");
         return SuperPoll_add_idle(sp, data, fd, rw);
     }
@@ -226,8 +232,12 @@ int SuperPoll_poll(SuperPoll *sp, PollResult *result, int ms)
     result->nhits = 0;
 
     // do the regular poll, with idlefd inside if available; 0MQ 3.1 poll is in ms.
+	
     nfound = zmq_poll(sp->pollfd, sp->nfd_hot, ms * ZMQ_POLL_MSEC);
     check(nfound >= 0 || errno == EINTR, "zmq_poll failed.");
+	
+	if (nfound > 0) 
+		log_info("!!! SuperPoll_poll - zmq_poll: %d !!!", nfound);
 
     result->hot_fds = nfound;
 
@@ -280,6 +290,7 @@ int SuperPoll_get_max_fd()
         rc = getrlimit(RLIMIT_NOFILE, &rl);
         check(rc == 0, "Failed to get your max open file limit, totally weird.");
         MAXFD = rl.rlim_cur;
+		log_info("Current MAXFD: %d", MAXFD);
     }
 
     debug("MAX open file descriptors is %d now.", MAXFD);
