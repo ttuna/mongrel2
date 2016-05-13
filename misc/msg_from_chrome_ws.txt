@@ -1,9 +1,10 @@
-!!! Chrome websocket request !!!
+!!! Chrome !!!
 
+! handshake !
 a7e0def3-9050-44f9-b0e2-ca2b150ffcc4 
-8 
+10 
 /websocket/ 
-741:{
+740:{
 	\"PATH\":\"/websocket/\",
 	\"sec-websocket-extensions\":\"permessage-deflate; client_max_window_bits\",
 	\"x-forwarded-for\":\"157.247.245.36\",
@@ -14,9 +15,9 @@ a7e0def3-9050-44f9-b0e2-ca2b150ffcc4
 	\"connection\":\"Upgrade\",
 	\"sec-websocket-version\":\"13\",
 	\"pragma\":\"no-cache\",
-	\"sec-websocket-key\":\"les1MugvHgSQ/Fxz+FarZA==\",
+	\"sec-websocket-key\":\"/EKpc5oyX1jhcGDC71ftxQ==\",
 	\"dnt\":\"1\",
-	\"user-agent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36\",
+	\"user-agent\":\"Mozilla/5.0 (Windows NT6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36\",
 	\"host\":\"157.247.245.36:6767\",
 	\"upgrade\":\"websocket\",
 	\"METHOD\":\"WEBSOCKET_HANDSHAKE\",
@@ -24,11 +25,52 @@ a7e0def3-9050-44f9-b0e2-ca2b150ffcc4
 	\"URI\":\"/websocket/\",
 	\"PATTERN\":\"/websocket\",
 	\"URL_SCHEME\":\"http\",
-	\"REMOTE_ADDR\":\"157.247.245.36\"},
-28:kMNL/VEZekcBAq3Blmc3t7vliyc=,
+	\"REMOTE_ADDR\":\"157.247.245.36\"
+},
+28:Iq6Fkovo73kVXerV7uEBcJNdZ08=,
+
+! send("test") !
+a7e0def3-9050-44f9-b0e2-ca2b150ffcc4 
+8 
+/websocket/ 
+745:{
+	\"PATH\":\"/websocket/\",
+	\"sec-websocket-extensions\":\"permessage-deflate; client_max_window_bits\",
+	\"x-forwarded-for\":\"157.247.245.36\",
+	\"FLAGS\":\"0x81\",
+	\"cache-control\":\"no-cache\",
+	\"origin\":\"http://157.247.245.36:6767\",
+	\"accept-language\":\"de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4\",
+	\"accept-encoding\":\"gzip, deflate, sdch\",
+	\"connection\":\"Upgrade\",
+	\"sec-websocket-version\":\"13\",
+	\"pragma\":\"no-cache\",
+	\"sec-websocket-key\":\"ueB+RsKRcTf7SXvKo7OHcg==\",
+	\"dnt\":\"1\",
+	\"user-agent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36\",
+	\"host\":\"157.247.245.36:6767\",
+	\"upgrade\":\"websocket\",
+	\"METHOD\":\"WEBSOCKET\",
+	\"VERSION\":\"HTTP/1.1\",
+	\"URI\":\"/websocket/\",
+	\"PATTERN\":\"/websocket\",
+	\"URL_SCHEME\":\"http\",
+	\"REMOTE_ADDR\":\"157.247.245.36\"
+},
+4:test,
+
+! close !
+ServerConnection::poll - Received: "a7e0def3-9050-44f9-b0e2-ca2b150ffcc4 9 /websocket/ 745:{\"PATH\":\"/websocket/\",\"sec-websocket-extensions\":\"pe
+rmessage-deflate; client_max_window_bits\",\"x-forwarded-for\":\"157.247.245.36\",\"FLAGS\":\"0x88\",\"cache-control\":\"no-cache\",\"origin\":\"http:
+//157.247.245.36:6767\",\"accept-language\":\"de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4\",\"accept-encoding\":\"gzip, deflate, sdch\",\"connection\":\"Upgra
+de\",\"sec-websocket-version\":\"13\",\"pragma\":\"no-cache\",\"sec-websocket-key\":\"JpzSAO7RSWctVMJmd4sMOA==\",\"dnt\":\"1\",\"user-agent\":\"Mozill
+a/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36\",\"host\":\"157.247.245.36:6767\",\"upgrade\":
+\"websocket\",\"METHOD\":\"WEBSOCKET\",\"VERSION\":\"HTTP/1.1\",\"URI\":\"/websocket/\",\"PATTERN\":\"/websocket\",\"URL_SCHEME\":\"http\",\"REMOTE_AD
+DR\":\"157.247.245.36\"},0:,"
 
 
-!!! QWebsocket request !!!
+
+!!! QWebsocket !!!
 
 a7e0def3-9050-44f9-b0e2-ca2b150ffcc4 
 20 

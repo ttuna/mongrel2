@@ -262,7 +262,7 @@ static inline void handler_process_request(Handler *handler, int id, int fd,
         check(rc != -1, "Register disconnect failed for: %d", fd);
     } else {
         int raw = conn->type != CONN_TYPE_MSG || handler->raw;
-		log_info("handler_process_request - raw=%d payload=%d:%s", raw, blength(payload), bdata(payload));
+		log_info("handler_process_request - raw=%d payload=%d:\n%s", raw, blength(payload), bdata(payload));
 
         rc = deliver_payload(raw, fd, conn, payload);
 		log_info("handler_process_request - deliver_payload rc=%d",rc);
