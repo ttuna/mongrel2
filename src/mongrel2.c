@@ -233,14 +233,12 @@ int attempt_chroot_drop(Server *srv)
 
     if(srv->chroot != NULL) {
         if(Unixy_chroot(srv->chroot) == 0) {
-			log_info("Unixy_chroot done ...");
 #if !defined(__CYGWIN__)
             if(Setting_get_int("server.daemonize", 1)) {
 #else
 			if(0) {
 #endif
                 rc = Unixy_daemonize(1); // 1 == chdir /
-				log_info("Unixy_daemonize done ...");
                 check(rc == 0, "Failed to daemonize, looks like you're hosed.");
             }
             else {
@@ -250,7 +248,6 @@ int attempt_chroot_drop(Server *srv)
 				if (getcwd(cwd, sizeof(cwd)) == NULL)
 					sprintf(cwd, "error");
 				
-				log_info("chdir done ... root dir: %s", cwd);
                 check(rc == 0, "Failed to change working directory to '/'.");
             }
         } else {
