@@ -236,7 +236,7 @@ int attempt_chroot_drop(Server *srv)
 #if !defined(__CYGWIN__)
             if(Setting_get_int("server.daemonize", 1)) {
 #else
-			if(0) {
+            if(0) {
 #endif
                 rc = Unixy_daemonize(1); // 1 == chdir /
                 check(rc == 0, "Failed to daemonize, looks like you're hosed.");

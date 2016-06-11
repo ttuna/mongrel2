@@ -305,7 +305,7 @@ int mqsend(void *socket, zmq_msg_t *msg, int flags)
 
     // try to send right away rather than go into the poll
     rc = zmq_msg_send(msg, socket, ZMQ_DONTWAIT);
-	log_info("mqsend - first zmq_msg_send: %d", rc);
+    log_info("mqsend - first zmq_msg_send: %d", rc);
 
     // if the send failed because it would block, then wait.
     while(rc < 0 && flags != ZMQ_DONTWAIT && errno == EAGAIN ) {
@@ -314,7 +314,7 @@ int mqsend(void *socket, zmq_msg_t *msg, int flags)
         }
 
         rc = zmq_msg_send(msg, socket, ZMQ_DONTWAIT);
-		log_info("mqsend - zmq_msg_send: %d", rc);
+	log_info("mqsend - zmq_msg_send: %d", rc);
     }
 
     // Retain compatibiltiy with 0MQ 2.1; always returned 0 on success

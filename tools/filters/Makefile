@@ -1,6 +1,10 @@
 PREFIX?=/usr/local
-#CFLAGS=-I../../src -I../../src/mbedtls/include $(OPTFLAGS) -g -fPIC -shared -nostartfiles -L../../build
+
+ifneq ($(uname_O),Cygwin)
+CFLAGS=-I../../src -I../../src/mbedtls/include $(OPTFLAGS) -g -fPIC -shared -nostartfiles -L../../build
+else
 CFLAGS=-I../../src -I../../src/mbedtls/include $(OPTFLAGS) -g -shared -nostartfiles -L../../build
+endif
 LDFLAGS=$(OPTLIBS)
 
 all: null.so rewrite.so sendfile.so

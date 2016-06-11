@@ -17,6 +17,9 @@ TEST_SRC=$(wildcard tests/*_tests.c)
 TESTS=$(patsubst %.c,%,${TEST_SRC})
 MAKEOPTS=OPTFLAGS="${NOEXTCFLAGS} ${OPTFLAGS}" OPTLIBS="${OPTLIBS}" LIBS="${LIBS}" DESTDIR="${DESTDIR}" PREFIX="${PREFIX}"
 
+uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
+uname_O := $(shell sh -c 'uname -o 2>/dev/null || echo not')
+
 # Prepare mbedtls git submodule
 # 
 # - Perform src/mbedtls submodule init and update, if necessary.  This is executed
@@ -87,7 +90,9 @@ builddirs:
 bin/mongrel2: build/libm2.a src/mongrel2.o
 	$(CC) $(CFLAGS) src/mongrel2.o -o $@ $< $(LIBS)
 
-#build/libm2.a: CFLAGS += -fPIC
+ifneq ($(uname_O),Cygwin)
+build/libm2.a: CFLAGS += -fPIC
+endif
 build/libm2.a: ${LIB_OBJ}
 	ar rcs $@ ${LIB_OBJ}
 	ranlib $@
@@ -157,6 +162,7 @@ config_modules: build/libm2.a
 	${MAKE} ${MAKEOPTS} -C tools/config_modules all
 
 # Try to install first before creating target directory and trying again
+ifeq ($(uname_O),Cygwin)
 install: all
 	install bin/mongrel2 $(DESTDIR)$(PREFIX)/bin/ \
 	    || ( install -d $(DESTDIR)$(PREFIX)/bin/ \
@@ -165,15 +171,16 @@ install: all
 	${MAKE} ${MAKEOPTS} -C tools/config_modules install
 	${MAKE} ${MAKEOPTS} -C tools/filters install
 	${MAKE} ${MAKEOPTS} -C tools/procer install
-
-#install: all
-#	install bin/mongrel2 $(PREFIX)/bin/ \
-#	    || ( install -d $(PREFIX)/bin/ \
-#	        && install bin/mongrel2 $(PREFIX)/bin/ )
-#	${MAKE} ${MAKEOPTS} -C tools/m2sh install
-#	${MAKE} ${MAKEOPTS} -C tools/config_modules install
-#	${MAKE} ${MAKEOPTS} -C tools/filters install
-#	${MAKE} ${MAKEOPTS} -C tools/procer install
+else
+install: all
+	install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ \
+	    || ( install -d $(DESTDIR)/$(PREFIX)/bin/ \
+	        && install bin/mongrel2 $(DESTDIR)/$(PREFIX)/bin/ )
+	${MAKE} ${MAKEOPTS} -C tools/m2sh install
+	${MAKE} ${MAKEOPTS} -C tools/config_modules install
+	${MAKE} ${MAKEOPTS} -C tools/filters install
+	${MAKE} ${MAKEOPTS} -C tools/procer install
+endif
 
 examples/python/mongrel2/sql/config.sql: src/config/config.sql src/config/mimetypes.sql
 	cat src/config/config.sql src/config/mimetypes.sql > $@

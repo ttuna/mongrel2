@@ -1,5 +1,13 @@
+uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
+uname_O := $(shell sh -c 'uname -o 2>/dev/null || echo not')
+
 PREFIX?=/usr/local
+ifneq ($(uname_O),Cygwin)
+CFLAGS=-I../../src -I../../src/mbedtls/include $(OPTFLAGS) -fPIC -shared -nostartfiles -L../../build
+else
 CFLAGS=-I../../src -I../../src/mbedtls/include $(OPTFLAGS) -shared -nostartfiles -L../../build
+endif
+
 LDFLAGS=$(OPTLIBS)
 
 MONGO_SRC = mongo-c-driver/src/bson.c \
@@ -17,7 +25,6 @@ all: null.so zmq.so
 fetch_mongo_c_driver:
 	if test ! -d mongo-c-driver; then git clone https://github.com/mongodb/mongo-c-driver.git; fi
 	cd mongo-c-driver && git checkout v0.6
-	
 
 mongodb.so: CFLAGS += $(MONGO_CFLAGS)
 mongodb.so: fetch_mongo_c_driver
@@ -32,10 +39,12 @@ clean:
 	rm -f *.o *.so
 	rm -Rf mongo-c-driver
 
-#install:
-#	install -d $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
-#	install *.so $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
+ifneq ($(uname_O),Cygwin)
+install:
+	install -d $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
+	install *.so $(DESTDIR)/$(PREFIX)/lib/mongrel2/config_modules/
+else
 install:
 	install -d $(PREFIX)/lib/mongrel2/config_modules/
 	install *.so $(PREFIX)/lib/mongrel2/config_modules/
-
+endif
